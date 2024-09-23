@@ -12,5 +12,7 @@ include(FetchContent)
 add_subdirectory("include")
 add_library(lab::lab1 ALIAS lab1)
 
+add_subdirectory("src")
+
 enable_testing()
 add_subdirectory("test")
