@@ -2,7 +2,7 @@
 #include <utils.hpp>
 
 TEST(LabTests, random_test) {
-	EXPECT_EQ(extract_digits("123abc456dsa7890"), "123456789");
+	EXPECT_EQ(extract_digits("123abc456dsa7890"), "1234567890");
 }
 
 TEST(LabTests, random_test_vol2) {
