@@ -41,7 +41,7 @@ target_link_libraries(
 	lab-test
 	GTest::gtest_main
 	GTest::gmock_main
-	lab1
+	utils
 )
 
 include(GoogleTest)

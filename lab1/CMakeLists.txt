@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED)
 include(FetchContent)
 
 add_subdirectory("include")
-add_library(lab::lab1 ALIAS lab1)
+add_library(lab::utils ALIAS utils)
 
 add_subdirectory("src")
 

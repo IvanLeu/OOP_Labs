@@ -5,13 +5,13 @@ set(sources
 )
 
 add_library(
-	lab1
+	utils
 	INTERFACE
 	${sources}
 )
 
 target_include_directories(
-	lab1
+	utils
 	INTERFACE
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
