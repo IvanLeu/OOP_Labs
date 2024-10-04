@@ -20,6 +20,11 @@ if(MSVC)
 	)
 endif()
 
+target_link_libraries(
+	core
+	task-lib
+)
+
 target_include_directories(
 	core
 	PUBLIC
