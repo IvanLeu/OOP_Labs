@@ -8,7 +8,5 @@ int main() {
 
 	Eleven el{ s };
 
-	std::string s{ el.ptr };
-
 	std::cout << s;
 }

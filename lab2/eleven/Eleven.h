@@ -18,8 +18,8 @@ public:
 
 		size_t i = 0;
 		while (num) {
-			auto n = num % 11;
-			ptr[i] = (n == 10) : 'A' : n + '0';
+			size_t n = num % 11;
+			ptr[i] = (n == 10u) ? 'A' : n + '0';
 			num /= 11;
 			i++;
 		}
@@ -46,7 +46,7 @@ private:
 			}
 
 			auto n = num % 11;
-			ptr[i] = (n == 10) : 'A' : n + '0';
+			ptr[i] = (n == 10) ? 'A' : n + '0';
 			num /= 11;
 			i++;
 		}
