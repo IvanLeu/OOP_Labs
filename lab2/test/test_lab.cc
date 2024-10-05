@@ -48,13 +48,13 @@ TEST(comparison_test_suite, equal_is_not_smaller) {
 }
 
 TEST(addition_test_suite, normal_test) {
-    Eleven left{ 10u }, right{ 20u }, answer{ 30u };
+    Eleven left{ 10u }, right{ 21u }, answer{ 31u };
     Eleven result = Eleven::add(left, right);
     ASSERT_TRUE(Eleven::equal(result, answer));
 }
 
 TEST(subtraction_test_suite, normal_test) {
-    Eleven left{ 30u }, right{ 20u }, answer{ 10u };
+    Eleven left{ 31u }, right{ 20u }, answer{ 11u };
     Eleven result = Eleven::subtract(left, right);
     ASSERT_TRUE(Eleven::equal(result, answer));
 }

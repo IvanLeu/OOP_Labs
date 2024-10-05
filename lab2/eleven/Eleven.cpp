@@ -1,11 +1,6 @@
 #include "Eleven.h"
 #include <algorithm>
-
-Eleven::Eleven() noexcept
-	:
-	len(0),
-	ptr(nullptr)
-{}
+#include <math.h>
 
 Eleven::Eleven(const Eleven& other) noexcept {
 	*this = other;
@@ -46,15 +41,18 @@ Eleven& Eleven::operator=(Eleven&& other) noexcept {
 Eleven Eleven::add(const Eleven& lhs, const Eleven& rhs) noexcept {
 	size_t sum = 0;
 
-	for (size_t i = 0, len = std::max(lhs.len, rhs.len); i < len; i++) {
-		if (lhs.ptr[i] == 'A' || rhs.ptr[i] == 'A') {
-			sum += 11;
-			continue;
-		}
-		else {
-			sum += (i < lhs.len) ? lhs.ptr[i] - '0' : 0;
-			sum += (i < rhs.len) ? rhs.ptr[i] - '0' : 0;
-		}
+	for (long long i = lhs.len - 1; i >= 0; i--) {
+		size_t thresh = 0;
+		thresh += lhs.ptr[i] == 'A' ? 10 : lhs.ptr[i] - '0';
+
+		sum += thresh * pow(11, i);
+	}
+
+	for (long long i = rhs.len - 1; i >= 0; i--) {
+		size_t thresh = 0;
+		thresh += rhs.ptr[i] == 'A' ? 10 : rhs.ptr[i] - '0';
+
+		sum += thresh * pow(11, i);
 	}
 
 	size_t result_length = 0;
@@ -68,7 +66,7 @@ Eleven Eleven::add(const Eleven& lhs, const Eleven& rhs) noexcept {
 	Eleven result{ result_length, 0u };
 
 	for (size_t i = 0; i < result_length; i++) {
-		result.ptr[i] = sum % 11;
+		result.ptr[i] = sum % 11 == 10 ? 'A' : (sum % 11) + '0';
 		sum /= 11;
 	}
 
@@ -76,22 +74,22 @@ Eleven Eleven::add(const Eleven& lhs, const Eleven& rhs) noexcept {
 }
 
 Eleven Eleven::subtract(const Eleven& lhs, const Eleven& rhs) noexcept {
-	size_t diff = 0;
+	long long diff = 0;
 
-	for (size_t i = 0, len = std::max(lhs.len, rhs.len); i < len; i++) {
-		if (lhs.ptr[i] == 'A') {
-			diff += 11;
-			continue;
-		}
-		else if (rhs.ptr[i] == 'A') {
-			diff -= 11;
-			continue;
-		}
-		else {
-			diff += (i < lhs.len) ? lhs.ptr[i] - '0' : 0;
-			diff -= (i < rhs.len) ? rhs.ptr[i] - '0' : 0;
-		}
+	for (long long i = lhs.len - 1; i >= 0; i--) {
+		size_t thresh = 0;
+		thresh += lhs.ptr[i] == 'A' ? 10 : lhs.ptr[i] - '0';
+
+		diff += thresh * pow(11, i);
 	}
+
+	for (long long i = rhs.len - 1; i >= 0; i--) {
+		size_t thresh = 0;
+		thresh += rhs.ptr[i] == 'A' ? 10 : rhs.ptr[i] - '0';
+
+		diff -= thresh * pow(11, i);
+	}
+
 
 	if (diff < 0) {
 		return Eleven();
@@ -99,7 +97,7 @@ Eleven Eleven::subtract(const Eleven& lhs, const Eleven& rhs) noexcept {
 
 	size_t result_length = 0;
 
-	size_t diff_cpy = diff;
+	long long diff_cpy = diff;
 	while (diff_cpy) {
 		++result_length;
 		diff_cpy /= 11;
@@ -108,7 +106,7 @@ Eleven Eleven::subtract(const Eleven& lhs, const Eleven& rhs) noexcept {
 	Eleven result{ result_length, 0u };
 
 	for (size_t i = 0; i < result_length; i++) {
-		result.ptr[i] = diff % 11;
+		result.ptr[i] = diff % 11 == 10 ? 'A' : (diff % 11) + '0';
 		diff /= 11;
 	}
 

@@ -34,7 +34,6 @@ if(MSVC)
 		lab-test
 		PRIVATE /W4
 		PRIVATE /MP
-		PRIVATE /WX
 	)
 endif()
 

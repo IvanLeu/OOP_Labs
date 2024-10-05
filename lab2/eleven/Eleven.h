@@ -5,7 +5,7 @@
 
 class Eleven {
 public:
-	Eleven() noexcept;
+	Eleven() = default;
 	explicit Eleven(auto num) requires(std::is_unsigned_v<decltype(num)>) {
 		auto num_cpy = num;
 
@@ -14,7 +14,7 @@ public:
 			num_cpy /= 11;
 		}
 
-		ptr = new unsigned char[len];
+		ptr = new unsigned char[len + 1]{};
 
 		size_t i = 0;
 		while (num) {
@@ -52,6 +52,6 @@ private:
 		}
 	}
 private:
-	size_t len;
-	unsigned char* ptr;
+	size_t len = 0;
+	unsigned char* ptr = nullptr;
 };

@@ -9,6 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED)
 
 add_subdirectory("eleven")
 
+add_library(lab::task-lib ALIAS task-lib)
+
 add_subdirectory("src")
 
 enable_testing()

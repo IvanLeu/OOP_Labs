@@ -1,14 +1,12 @@
 cmake_minimum_required(VERSION 3.26)
 
-set(sources 
-	"${CMAKE_CURRENT_SOURCE_DIR}/Eleven.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}/Eleven.cpp"
-)
+add_library(task-lib INTERFACE)
 
-add_library(
+target_sources(
 	task-lib
 	INTERFACE
-	${sources}
+	${CMAKE_CURRENT_SOURCE_DIR}/Eleven.h
+	${CMAKE_CURRENT_SOURCE_DIR}/Eleven.cpp
 )
 
 target_include_directories(
