@@ -20,6 +20,8 @@ public:
 	virtual Vertex GetCenter() const = 0;
 	virtual operator double() const = 0;
 	inline std::string GetName() const { return shapeName; }
+	inline std::vector<Vertex> GetVertices() const { return vertices; }
+	inline void SetVertices(const std::vector<Vertex>& verts) { vertices = verts; }
 	virtual ~Shape() = 0;
 private:
 	std::string shapeName;
@@ -36,31 +38,43 @@ public:
 	}
 	virtual Vertex GetCenter() const override;
 	virtual operator double() const override;
-	friend std::istream& operator>>(std::istream& is, Shape& shape);
+	friend std::istream& operator>>(std::istream& is, Triangle& shape);
 };
 
-class Cube : public Shape {
+class Square : public Shape {
 public:
-	Cube(const Vertex& pos, float width)
+	Square(const Vertex& pos, float width)
 		:
-		Shape("Cube", FromWidth(pos, width))
+		pos(pos),
+		width(width),
+		Shape("Square", FromWidth(pos, width))
 	{}
 	virtual Vertex GetCenter() const override;
 	virtual operator double() const override;
-	friend std::istream& operator>>(std::istream& is, Shape& shape);
+	friend std::istream& operator>>(std::istream& is, Square& shape);
 private:
 	std::vector<Vertex> FromWidth(const Vertex& v, float width) const;
+private:
+	Vertex pos;
+	float width;
 };
 
 class Rectangle : public Shape {
 public:
 	Rectangle( const Vertex& pos, float width, float height )
 		:
+		pos(pos),
+		width(width),
+		height(height),
 		Shape("Rectangle", FromWidthAndHeight(pos, width, height))
 	{}
 	virtual Vertex GetCenter() const override;
 	virtual operator double() const override;
-	friend std::istream& operator>>(std::istream& is, Shape& shape);
+	friend std::istream& operator>>(std::istream& is, Rectangle& shape);
 private:
 	std::vector<Vertex> FromWidthAndHeight(const Vertex& v, float width, float height) const;
+private:
+	Vertex pos;
+	float width;
+	float height;
 };
