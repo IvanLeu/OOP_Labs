@@ -53,7 +53,7 @@ public:
 	virtual operator double() const override;
 	friend std::istream& operator>>(std::istream& is, Square& shape);
 private:
-	std::vector<Vertex> FromWidth(const Vertex& v, float width) const;
+	static std::vector<Vertex> FromWidth(const Vertex& v, float width);
 private:
 	Vertex pos;
 	float width;
@@ -72,7 +72,7 @@ public:
 	virtual operator double() const override;
 	friend std::istream& operator>>(std::istream& is, Rectangle& shape);
 private:
-	std::vector<Vertex> FromWidthAndHeight(const Vertex& v, float width, float height) const;
+	static std::vector<Vertex> FromWidthAndHeight(const Vertex& v, float width, float height);
 private:
 	Vertex pos;
 	float width;

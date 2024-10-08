@@ -61,7 +61,7 @@ std::istream& operator>>(std::istream& is, Square& sqr) {
 	return is;
 }
 
-std::vector<Shape::Vertex> Square::FromWidth(const Vertex& v, float width) const {
+std::vector<Shape::Vertex> Square::FromWidth(const Vertex& v, float width) {
 	std::vector<Shape::Vertex> verts;
 
 	verts.push_back(v);
@@ -90,7 +90,7 @@ std::istream& operator>>(std::istream& is, Rectangle& shape) {
 	return is;
 }
 
-std::vector<Shape::Vertex> Rectangle::FromWidthAndHeight(const Vertex& v, float width, float height) const {
+std::vector<Shape::Vertex> Rectangle::FromWidthAndHeight(const Vertex& v, float width, float height) {
 	std::vector<Shape::Vertex> verts;
 
 	verts.push_back(v);
