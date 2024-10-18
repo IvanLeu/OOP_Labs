@@ -1,7 +1,7 @@
 #include "Shapes.h"
 #include <iostream>
 
-std::ostream& operator<<(std::ostream& os, const Shape& shape)
+std::ostream& operator<<(std::ostream& os, const Polygon& shape)
 {
 	os << shape.GetName() << ": " << " { ";
 	for (auto& v : shape.vertices) {

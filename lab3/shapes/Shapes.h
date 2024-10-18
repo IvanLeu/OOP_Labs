@@ -22,7 +22,7 @@ public:
 		shapeName(name_in),
 		vertices(vertices_in)
 	{}
-	friend std::ostream& operator<<(std::ostream& os, const Shape& shape);
+	friend std::ostream& operator<<(std::ostream& os, const Polygon& shape);
 	virtual inline std::string GetName() const { return shapeName; }
 	virtual inline std::vector<Vertex> GetVertices() const { return vertices; }
 	inline void SetVertices(const std::vector<Vertex>& verts) { vertices = verts; }
