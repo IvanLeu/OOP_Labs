@@ -38,7 +38,7 @@ Eleven& Eleven::operator=(Eleven&& other) noexcept {
 }
 
 
-Eleven Eleven::add(const Eleven& lhs, const Eleven& rhs) noexcept {
+Eleven Eleven::add(const Eleven& lhs, const Eleven& rhs)  {
 	size_t sum = 0;
 
 	for (long long i = lhs.len - 1; i >= 0; i--) {
@@ -73,7 +73,7 @@ Eleven Eleven::add(const Eleven& lhs, const Eleven& rhs) noexcept {
 	return result;
 }
 
-Eleven Eleven::subtract(const Eleven& lhs, const Eleven& rhs) noexcept {
+Eleven Eleven::subtract(const Eleven& lhs, const Eleven& rhs)  {
 	long long diff = 0;
 
 	for (long long i = lhs.len - 1; i >= 0; i--) {

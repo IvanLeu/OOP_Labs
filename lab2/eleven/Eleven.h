@@ -28,8 +28,8 @@ public:
 	Eleven& operator=(const Eleven&) noexcept;
 	Eleven(Eleven&&) noexcept;
 	Eleven& operator=(Eleven&&) noexcept;
-	static Eleven add(const Eleven& lhs, const Eleven& rhs) noexcept;
-	static Eleven subtract(const Eleven& lhs, const Eleven& rhs) noexcept;
+	static Eleven add(const Eleven& lhs, const Eleven& rhs);
+	static Eleven subtract(const Eleven& lhs, const Eleven& rhs);
 	static bool greater_than(const Eleven& lhs, const Eleven& rhs) noexcept;
 	static bool less_than(const Eleven& lhs, const Eleven& rhs) noexcept;
 	static bool equal(const Eleven& lhs, const Eleven& rhs) noexcept;
