@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 
+
 std::ostream& operator<<(std::ostream& os, const Polygon& shape)
 {
 	os << shape.GetName() << ": " << " { ";
@@ -12,7 +13,6 @@ std::ostream& operator<<(std::ostream& os, const Polygon& shape)
 
 	return os;
 }
-
 
 bool Polygon::operator==(const Polygon& rhs) const {
 	if (GetVertices().size() != rhs.GetVertices().size())
@@ -62,13 +62,18 @@ bool Triangle::operator==(const Triangle& rhs) const
 	return false;
 }
 
-Triangle::operator double() const {
+double Triangle::GetArea() const
+{
 	auto verts = GetVertices();
 
 	double area = 0.5 * abs((verts[0].x - verts[2].x) * (verts[1].y - verts[0].y)
 		- (verts[0].x - verts[1].x) * (verts[2].y - verts[0].y));
 
 	return area;
+}
+
+Triangle::operator double() const {
+	return GetArea();
 }
 
 std::istream& operator>>(std::istream& is, Triangle& tri) {
@@ -88,7 +93,7 @@ Vertex Square::GetCenter() const {
 }
 
 Square::operator double() const {
-	return width * width;
+	return GetArea();
 }
 
 std::istream& operator>>(std::istream& is, Square& sqr) {
@@ -115,7 +120,7 @@ Vertex Rectangle::GetCenter() const {
 }
 
 Rectangle::operator double() const {
-	return width * height;
+	return GetArea();
 }
 
 std::istream& operator>>(std::istream& is, Rectangle& shape) {
@@ -140,6 +145,16 @@ std::vector<Vertex> Rectangle::FromWidthAndHeight(const Vertex& v, float width, 
 bool Square::operator==(const Square& rhs) const
 {
 	return width == rhs.width && pos == rhs.pos;
+}
+
+double Square::GetArea() const
+{
+	return width * width;
+}
+
+double Rectangle::GetArea() const
+{
+	return width * height;
 }
 
 

@@ -50,7 +50,8 @@ public:
 class Shape {
 public:
 	virtual Vertex GetCenter() const = 0;
-	virtual operator double() const = 0;
+	virtual double GetArea() const = 0;
+	virtual explicit operator double() const = 0;
 };
 
 class Polygon : public Shape {
@@ -81,7 +82,8 @@ public:
 		assert(vertices_in.size() == 3);
 	}
 	virtual Vertex GetCenter() const override;
-	virtual operator double() const override;
+	virtual double GetArea() const override;
+	virtual explicit operator double() const override;
 	bool operator==(const Triangle& rhs) const;
 	friend std::istream& operator>>(std::istream& is, Triangle& shape);
 };
@@ -95,7 +97,8 @@ public:
 		Polygon("Square", FromWidth(pos, width))
 	{}
 	virtual Vertex GetCenter() const override;
-	virtual operator double() const override;
+	virtual explicit operator double() const override;
+	virtual double GetArea() const override;
 	friend std::istream& operator>>(std::istream& is, Square& shape);
 	bool operator==(const Square& rhs) const;
 private:
@@ -115,7 +118,8 @@ public:
 		Polygon("Rectangle", FromWidthAndHeight(pos, width, height))
 	{}
 	virtual Vertex GetCenter() const override;
-	virtual operator double() const override;
+	virtual explicit operator double() const override;
+	virtual double GetArea() const override;
 	friend std::istream& operator>>(std::istream& is, Rectangle& shape);
 	bool operator==(const Rectangle& rhs) const;
 private:
