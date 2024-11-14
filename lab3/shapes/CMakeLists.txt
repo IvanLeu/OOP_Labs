@@ -7,6 +7,8 @@ target_sources(
 	INTERFACE
 	${CMAKE_CURRENT_SOURCE_DIR}/Shapes.h
 	${CMAKE_CURRENT_SOURCE_DIR}/Shapes.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Array.h
+	${CMAKE_CURRENT_SOURCE_DIR}/Array.cpp
 )
 
 target_include_directories(
