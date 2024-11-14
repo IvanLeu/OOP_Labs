@@ -31,6 +31,8 @@ Array& Array::operator=(const Array& other)
 		m_shapes = new Shape * [m_capacity];
 		std::copy(other.begin(), other.end(), begin());
 	}
+
+	return *this;
 }
 
 Array::Array(Array&& other) noexcept
@@ -53,6 +55,7 @@ Array& Array::operator=(Array&& other) noexcept
 		m_shapes = other.m_shapes;
 		other.m_shapes = nullptr;
 	}
+	return *this;
 }
 
 Array::~Array()
@@ -78,7 +81,7 @@ void Array::push_back(const Shape* shape)
 
 void Array::pop_back()
 {
-	delete m_shapes[m_size--];
+	m_shapes[m_size--]->~Shape();
 }
 
 void Array::erase(size_t index)
