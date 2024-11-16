@@ -2,104 +2,60 @@
 #include "Shapes.h"
 #include <initializer_list>
 
-template<Vert T>
+template<class T>
 class Array {
 public:
 	Array() = default;
-	Array(const std::initializer_list<Shape<T>*>& shapes)
+	Array(size_t size)
 	{
-		m_capacity = shapes.size();
-		m_size = shapes.size();
-		m_shapes = new Shape<T> * [m_capacity];
-
-		std::copy_n(shapes.begin(), m_size, begin());
+		m_capacity = size;
+		m_size = size;
+		m_data = std::make_unique<T[]>(m_capacity);
 	}
-	Array(const Array& other)
+	Array(const std::initializer_list<T>& list)
 	{
-		m_size = other.m_size;
-		m_capacity = other.m_capacity;
-		delete[] m_shapes;
+		m_capacity = list.size();
+		m_size = list.size();
+		m_data = std::make_unique<T[]>(m_capacity);
 
-		m_shapes = new Shape * [m_capacity];
-		std::copy(other.begin(), other.end(), begin());
+		std::copy_n(list.begin(), m_size, begin());
 	}
-	Array& operator=(const Array& other)
+	void push_back(const T& shape)
 	{
-		if (this != &other) {
-			m_size = other.m_size;
-			m_capacity = other.m_capacity;
-			delete[] m_shapes;
-
-			m_shapes = new Shape * [m_capacity];
-			std::copy(other.begin(), other.end(), begin());
-		}
-
-		return *this;
-	}
-	Array(Array&& other) noexcept
-	{
-		m_size = other.m_size;
-		m_capacity = other.m_capacity;
-		delete[] m_shapes;
-
-		m_shapes = other.m_shapes;
-		other.m_shapes = nullptr;
-	}
-	Array& operator=(Array&& other) noexcept
-	{
-		if (this != &other) {
-			m_size = other.m_size;
-			m_capacity = other.m_capacity;
-			delete[] m_shapes;
-
-			m_shapes = other.m_shapes;
-			other.m_shapes = nullptr;
-		}
-		return *this;
-	}
-	~Array()
-	{
-		delete[] m_shapes;
-	}
-	void push_back(const Shape<T>* shape)
-	{
-		if (m_size < m_capacity) {
-			memcpy(m_shapes[m_size++], shape, sizeof(Shape));
-		}
-		else {
+		if (m_size >= m_capacity) {
 			m_capacity *= 2;
-			auto new_buf = new Shape * [m_capacity];
-			std::copy(begin(), end(), new_buf);
-			delete[] m_shapes;
-			m_shapes = new_buf;
-
-			memcpy(m_shapes[m_size++], shape, sizeof(Shape));
+			auto new_buf = std::make_unique<T[]>(m_capacity);
+			for (size_t i = 0; i < m_size; i++) {
+				new_buf[i] = m_data[i];
+			}
+			m_data = std::move(new_buf);
 		}
+		m_data[m_size++] = shape;
 	}
 	void pop_back()
 	{
-		m_shapes[m_size--]->~Shape();
+		m_size--;
 	}
 	void erase(size_t index)
 	{
 		if (index >= 0 && index <= m_size) {
-			std::swap(m_shapes[m_size], m_shapes[index]);
+			std::swap(m_data[m_size], m_data[index]);
 			pop_back();
 		}
 	}
-	const Shape<T>* operator[](int index) const
+	const T& operator[](int index) const
 	{
-		if (index >= 0 && index <= m_size) {
-			return this->m_shapes[index];
+		if (index <= 0 || index >= m_size) {
+			throw std::out_of_range("Index out of range.");
 		}
-		return nullptr;
+		return this->m_data[index];
 	}
-	Shape<T>* operator[](int index)
+	T& operator[](int index)
 	{
-		if (index >= 0 && index <= m_size) {
-			return this->m_shapes[index];
+		if (index <= 0 || index >= m_size) {
+			throw std::out_of_range("Index out of range.");
 		}
-		return nullptr;
+		return this->m_data[index];
 	}
 	bool empty() const
 	{
@@ -116,30 +72,31 @@ public:
 	void reserve(size_t new_capacity)
 	{
 		m_capacity = new_capacity;
-		if (!m_shapes) {
-			m_shapes = new Shape * [m_capacity];
+		if (!m_data) {
+			m_data = std::make_unique<T[]>(m_capacity);
 		}
 		else {
-			auto new_buf = new Shape * [m_capacity];
-			std::copy(begin(), end(), new_buf);
-			delete[] m_shapes;
-			m_shapes = new_buf;
+			auto new_buf = std::make_unique<T[]>(m_capacity);
+			for (size_t i = 0; i < m_size; i++) {
+				new_buf[i] = m_data[i];
+			}
+			m_data = std::move(new_buf);
 		}
 	}
-	Shape<T>** data() const
+	T* data() const
 	{
-		return m_shapes;
+		return m_data.get();
 	}
-	Shape<T>** begin() const
+	T* begin() const
 	{
-		return m_shapes;
+		return data();
 	}
-	Shape<T>** end() const
+	T* end() const
 	{
-		return m_shapes + m_size;
+		return m_data.get() + m_size;
 	}
 private:
 	size_t m_size = 0;
 	size_t m_capacity = 0;
-	Shape<T>** m_shapes = nullptr;
+	std::unique_ptr<T[]> m_data = nullptr;
 };

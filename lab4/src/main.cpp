@@ -4,15 +4,17 @@
 #include <Array.h>
 
 int main() {
-    auto s1 = Triangle(Triangle<float>({ {0.0f, 0.0f}, {3.0f, 0.0f}, {0.0f, 3.0f} }));
-    auto s2 = Square(Vertex<float>{ 0.0f, 0.0f }, 100.0f);
-    auto s3 = Rectangle(Vertex<float>{ 0.0f, 0.0f }, 100.0f, 100.0f);
+    auto s1 = std::make_unique<Triangle<float>>(Triangle<float>({ {0.0f, 0.0f}, {3.0f, 0.0f}, {0.0f, 3.0f} }));
+    auto s2 = std::make_unique<Square<float>>(Vertex<float>{ 0.0f, 0.0f }, 100.0f);
+    auto s3 = std::make_unique<Rectangle<float>>(Vertex<float>{ 0.0f, 0.0f }, 100.0f, 100.0f);
 
-    Array<float> container = {
-        &s1, &s2, &s3
+    Array<Shape<float>*> container = {
+        s1.get(), s2.get(), s3.get()
     };
 
+    container.push_back(s1.get());
+
     for (auto& s : container) {
-        std::cout << *static_cast<Polygon<float>*>(s) << std::endl;
+        std::cout << *reinterpret_cast<Polygon<float>*>(s) << std::endl;
     }
 }
