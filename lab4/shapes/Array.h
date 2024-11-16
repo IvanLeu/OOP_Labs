@@ -6,11 +6,11 @@ template<Vert T>
 class Array {
 public:
 	Array() = default;
-	Array(const std::initializer_list<Shape*>& shapes)
+	Array(const std::initializer_list<Shape<T>*>& shapes)
 	{
 		m_capacity = shapes.size();
 		m_size = shapes.size();
-		m_shapes = new Shape * [m_capacity];
+		m_shapes = new Shape<T> * [m_capacity];
 
 		std::copy_n(shapes.begin(), m_size, begin());
 	}
@@ -61,7 +61,7 @@ public:
 	{
 		delete[] m_shapes;
 	}
-	void push_back(const Shape* shape)
+	void push_back(const Shape<T>* shape)
 	{
 		if (m_size < m_capacity) {
 			memcpy(m_shapes[m_size++], shape, sizeof(Shape));

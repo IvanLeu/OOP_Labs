@@ -41,11 +41,11 @@ struct Vertex {
 	bool operator!=(const Vertex& rhs) const {
 		return !(*this == rhs);
 	}
-	friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex) {
+	friend std::ostream& operator<<(std::ostream& os, const Vertex<T>& vertex) {
 		os << "(" << vertex.x << " ," << vertex.y << ")";
 		return os;
 	}
-	friend std::istream& operator>>(std::istream& is, Vertex& vertex) {
+	friend std::istream& operator>>(std::istream& is, Vertex<T>& vertex) {
 		is >> vertex.x >> vertex.y;
 		return is;
 	}
@@ -71,7 +71,7 @@ protected:
 		vertices(vertices_in)
 	{}
 public:
-	friend std::ostream& operator<<(std::ostream& os, const Polygon& shape)
+	friend std::ostream& operator<<(std::ostream& os, const Polygon<T>& shape)
 	{
 		os << shape.GetName() << ": " << " { ";
 		for (auto& v : shape.vertices) {
@@ -82,8 +82,8 @@ public:
 		return os;
 	}
 	virtual inline std::string GetName() const { return shapeName; }
-	virtual inline std::vector<Vertex> GetVertices() const { return vertices; }
-	inline void SetVertices(const std::vector<Vertex>& verts) { vertices = verts; }
+	virtual inline std::vector<Vertex<T>> GetVertices() const { return vertices; }
+	inline void SetVertices(const std::vector<Vertex<T>>& verts) { vertices = verts; }
 	virtual ~Polygon() = default;
 	bool operator==(const Polygon& rhs) const {
 		if (GetVertices().size() != rhs.GetVertices().size())
@@ -116,12 +116,12 @@ class Triangle : public Polygon<T> {
 public:
 	Triangle(const std::vector<Vertex<T>>& vertices_in)
 		:
-		Polygon("Triangle", vertices_in)
+		Polygon<T>("Triangle", vertices_in)
 	{
 		assert(vertices_in.size() == 3);
 	}
 	virtual Vertex<T> GetCenter() const override {
-		auto tri = GetVertices();
+		auto tri = Polygon<T>::GetVertices();
 
 		float centerX = (tri[0].x + tri[1].x + tri[2].x) / 3.0f;
 		float centerY = (tri[0].y + tri[1].y + tri[2].y) / 3.0f;
@@ -129,7 +129,7 @@ public:
 		return Vertex<T>{ centerX, centerY };
 	}
 	virtual double GetArea() const override {
-		auto verts = GetVertices();
+		auto verts = Polygon<T>::GetVertices();
 
 		double area = 0.5 * abs((verts[0].x - verts[2].x) * (verts[1].y - verts[0].y)
 			- (verts[0].x - verts[1].x) * (verts[2].y - verts[0].y));
@@ -146,7 +146,7 @@ public:
 			{
 				return true;
 			}
-			else if (vertices[i] == rhs.vertices[j])
+			else if (Polygon<T>::vertices[i] == rhs.vertices[j])
 			{
 				++i;
 				j = -1;
@@ -154,7 +154,7 @@ public:
 		}
 		return false;
 	}
-	friend std::istream& operator>>(std::istream& is, Triangle& shape) {
+	friend std::istream& operator>>(std::istream& is, Triangle& tri) {
 		std::vector<Vertex<T>> verts;
 
 		is >> verts[0];
@@ -174,7 +174,7 @@ public:
 		:
 		pos(pos),
 		width(width),
-		Polygon("Square", FromWidth(pos, width))
+		Polygon<T>("Square", FromWidth(pos, width))
 	{}
 	virtual Vertex<T> GetCenter() const override {
 		return Vertex<T>{ pos.x + width * (T)0.5f, pos.y + width * (T)0.5f };
@@ -185,7 +185,7 @@ public:
 	virtual double GetArea() const override {
 		return width * width;
 	}
-	friend std::istream& operator>>(std::istream& is, Square& shape) {
+	friend std::istream& operator>>(std::istream& is, Square& sqr) {
 		is >> sqr.pos;
 		is >> sqr.width;
 
@@ -196,7 +196,7 @@ public:
 	}
 private:
 	static std::vector<Vertex<T>> FromWidth(const Vertex<T>& v, float width) {
-		std::vector<Vertex> verts;
+		std::vector<Vertex<T>> verts;
 
 		verts.push_back(v);
 		verts.push_back({ v.x + width, v.y });
@@ -218,7 +218,7 @@ public:
 		pos(pos),
 		width(width),
 		height(height),
-		Polygon("Rectangle", FromWidthAndHeight(pos, width, height))
+		Polygon<T>("Rectangle", FromWidthAndHeight(pos, width, height))
 	{}
 	virtual Vertex<T> GetCenter() const override {
 		return Vertex<T>{ pos.x + width * (T)0.5f, pos.y + height * (T)0.5f };
