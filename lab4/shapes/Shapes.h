@@ -65,25 +65,27 @@ public:
 template<Vert T>
 class Polygon : public Shape<T> {
 protected:
-	Polygon(const std::string& name_in, const std::vector<Vertex<T>>& vertices_in)
+	Polygon(const std::string& name_in, int vertex_count, const std::shared_ptr<Vertex<T>[]>& vertices_in)
 		:
 		shapeName(name_in),
-		vertices(vertices_in)
+		vertices(vertices_in),
+		vertexCount(vertex_count)
 	{}
 public:
 	friend std::ostream& operator<<(std::ostream& os, const Polygon<T>& shape)
 	{
 		os << shape.GetName() << ": " << " { ";
-		for (auto& v : shape.vertices) {
-			os << v;
+
+		for (int i = 0; i < shape.vertexCount; ++i) {
+			os << shape.vertices[i];
 		}
 		os << "}";
 
 		return os;
 	}
 	virtual inline std::string GetName() const { return shapeName; }
-	virtual inline std::vector<Vertex<T>> GetVertices() const { return vertices; }
-	inline void SetVertices(const std::vector<Vertex<T>>& verts) { vertices = verts; }
+	virtual inline std::shared_ptr<Vertex<T>[]> GetVertices() const { return vertices; }
+	inline void SetVertices(const std::shared_ptr<Vertex<T>[]>& verts) { vertices = verts; }
 	virtual ~Polygon() = default;
 	bool operator==(const Polygon& rhs) const {
 		if (GetVertices().size() != rhs.GetVertices().size())
@@ -108,18 +110,17 @@ public:
 	}
 protected:
 	std::string shapeName;
-	std::vector<Vertex<T>> vertices;
+	int vertexCount;
+	std::shared_ptr<Vertex<T>[]> vertices;
 };
 
 template<Vert T>
 class Triangle : public Polygon<T> {
 public:
-	Triangle(const std::vector<Vertex<T>>& vertices_in)
+	Triangle(const std::shared_ptr<Vertex<T>[]>& vertices_in)
 		:
-		Polygon<T>("Triangle", vertices_in)
-	{
-		assert(vertices_in.size() == 3);
-	}
+		Polygon<T>("Triangle", 3, vertices_in)
+	{}
 	virtual Vertex<T> GetCenter() const override {
 		auto tri = Polygon<T>::GetVertices();
 
@@ -155,7 +156,7 @@ public:
 		return false;
 	}
 	friend std::istream& operator>>(std::istream& is, Triangle& tri) {
-		std::vector<Vertex<T>> verts;
+		std::shared_ptr<Vertex<T>[]> verts;
 
 		is >> verts[0];
 		is >> verts[1];
@@ -174,7 +175,7 @@ public:
 		:
 		pos(pos),
 		width(width),
-		Polygon<T>("Square", FromWidth(pos, width))
+		Polygon<T>("Square", 4,FromWidth(pos, width))
 	{}
 	virtual Vertex<T> GetCenter() const override {
 		return Vertex<T>{ pos.x + width * (T)0.5f, pos.y + width * (T)0.5f };
@@ -195,13 +196,13 @@ public:
 		return width == rhs.width && pos == rhs.pos;
 	}
 private:
-	static std::vector<Vertex<T>> FromWidth(const Vertex<T>& v, float width) {
-		std::vector<Vertex<T>> verts;
+	static std::shared_ptr<Vertex<T>[]> FromWidth(const Vertex<T>& v, float width) {
+		std::shared_ptr<Vertex<T>[]> verts = std::make_shared<Vertex<T>[]>(4);
 
-		verts.push_back(v);
-		verts.push_back({ v.x + width, v.y });
-		verts.push_back({ v.x, v.y + width });
-		verts.push_back({ v.x + width, v.y + width });
+		verts[0] = Vertex<T>(v);
+		verts[1] = Vertex<T>({ v.x + width, v.y });
+		verts[2] = Vertex<T>({ v.x, v.y + width });
+		verts[3] = Vertex<T>({ v.x + width, v.y + width });
 
 		return verts;
 	}
@@ -218,7 +219,7 @@ public:
 		pos(pos),
 		width(width),
 		height(height),
-		Polygon<T>("Rectangle", FromWidthAndHeight(pos, width, height))
+		Polygon<T>("Rectangle", 4, FromWidthAndHeight(pos, width, height))
 	{}
 	virtual Vertex<T> GetCenter() const override {
 		return Vertex<T>{ pos.x + width * (T)0.5f, pos.y + height * (T)0.5f };
@@ -240,13 +241,13 @@ public:
 		return width == rhs.width && height == rhs.height && pos == rhs.pos;
 	}
 private:
-	static std::vector<Vertex<T>> FromWidthAndHeight(const Vertex<T>& v, T width, T height) {
-		std::vector<Vertex<T>> verts;
+	static std::shared_ptr<Vertex<T>[]> FromWidthAndHeight(const Vertex<T>& v, T width, T height) {
+		std::shared_ptr<Vertex<T>[]> verts = std::make_shared<Vertex<T>[]>(4);
 
-		verts.push_back(v);
-		verts.push_back({ v.x + width, v.y });
-		verts.push_back({ v.x, v.y + height });
-		verts.push_back({ v.x + width, v.y + height });
+		verts[0] = Vertex<T>(v);
+		verts[1] = Vertex<T>({ v.x + width, v.y });
+		verts[2] = Vertex<T>({ v.x, v.y + height });
+		verts[3] = Vertex<T>({ v.x + width, v.y + height });
 
 		return verts;
 	}

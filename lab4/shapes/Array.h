@@ -10,13 +10,13 @@ public:
 	{
 		m_capacity = size;
 		m_size = size;
-		m_data = std::make_unique<T[]>(m_capacity);
+		m_data = std::make_shared<T[]>(m_capacity);
 	}
 	Array(const std::initializer_list<T>& list)
 	{
 		m_capacity = list.size();
 		m_size = list.size();
-		m_data = std::make_unique<T[]>(m_capacity);
+		m_data = std::make_shared<T[]>(m_capacity);
 
 		std::copy_n(list.begin(), m_size, begin());
 	}
@@ -24,7 +24,7 @@ public:
 	{
 		if (m_size >= m_capacity) {
 			m_capacity *= 2;
-			auto new_buf = std::make_unique<T[]>(m_capacity);
+			auto new_buf = std::make_shared<T[]>(m_capacity);
 			for (size_t i = 0; i < m_size; i++) {
 				new_buf[i] = m_data[i];
 			}
@@ -73,10 +73,10 @@ public:
 	{
 		m_capacity = new_capacity;
 		if (!m_data) {
-			m_data = std::make_unique<T[]>(m_capacity);
+			m_data = std::make_shared<T[]>(m_capacity);
 		}
 		else {
-			auto new_buf = std::make_unique<T[]>(m_capacity);
+			auto new_buf = std::make_shared<T[]>(m_capacity);
 			for (size_t i = 0; i < m_size; i++) {
 				new_buf[i] = m_data[i];
 			}
@@ -98,5 +98,5 @@ public:
 private:
 	size_t m_size = 0;
 	size_t m_capacity = 0;
-	std::unique_ptr<T[]> m_data = nullptr;
+	std::shared_ptr<T[]> m_data = nullptr;
 };
