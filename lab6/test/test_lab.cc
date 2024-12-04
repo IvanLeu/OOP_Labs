@@ -2,6 +2,7 @@
 #include "Visitor.h"
 #include "Observer.h"
 #include "Factory.h"
+#include "World.h"
 #include <gtest/gtest.h>
 #include <vector>
 #include <memory>
@@ -17,33 +18,37 @@ TEST(NPCTest, CreateAndAccess) {
     EXPECT_FLOAT_EQ(bull.GetPosY(), 20.0f);
 }
 
-TEST(ObserverTest, NotifyObservers) {
-    auto console_observer = std::make_shared<ConsoleObserver>();
-    Bull bull({ 100.0f, 200.0f }, "Bull1");
-    bull.addObserver(console_observer);
+TEST(WorldTest, World) {
+    World w;
+    Visitor v(10.0);
+    ConsoleObserver ob;
 
-    testing::internal::CaptureStdout();
-    bull.notifyObservers("Enemy");
-    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_NO_THROW(w.AddCharacter("Dragon", "Nasty Joe", 0.0, 0.0));
+    EXPECT_NO_THROW(w.AddCharacter("Bull", "His Meat", 0.0, 10.0));
 
-    EXPECT_EQ(output, "Bull1 defeated Enemy\n");
+    EXPECT_NO_THROW(v.AddObserver(&ob));
+
+    EXPECT_NO_THROW(w.Engage(v));
 }
 
 TEST(FileOperationsTest, SaveAndLoadNPCs) {
-    std::vector<std::unique_ptr<NPC>> npcs;
-    npcs.push_back(std::make_unique<Bull>(Coordinates{ 10.0, 20.0 }, "Bull1"));
-    npcs.push_back(std::make_unique<Dragon>(Coordinates{ 30.0, 40.0 }, "Dragon1"));
+    World w;
 
-    const std::string filename = "data/pre_created_npcs/npcs.txt";
-    save_npc_to_file(npcs, filename);
+    w.AddCharacter("Bull", "Bull1", 10.0, 10.0);
+    w.AddCharacter("Dragon", "Dragon1", 30.0, 40.0);
 
-    auto loaded_npcs = load_npcs_from_file(filename);
-    ASSERT_EQ(loaded_npcs.size(), npcs.size());
+    const std::string filename = "npcs.txt";
+
+    w.Serialize(filename);
+
+    World w2;
+
+    w2.Deserialize(filename);
+    auto loaded_npcs = *reinterpret_cast<std::vector<std::shared_ptr<Character>>*>(&w2);
+    ASSERT_EQ(loaded_npcs.size(), 2);
     EXPECT_EQ(loaded_npcs[0]->GetType(), "Bull");
     EXPECT_EQ(loaded_npcs[0]->GetName(), "Bull1");
     EXPECT_EQ(loaded_npcs[1]->GetType(), "Dragon");
     EXPECT_EQ(loaded_npcs[1]->GetName(), "Dragon1");
 
-    // Удаление временного файла
-    std::remove(filename.c_str());
 }
