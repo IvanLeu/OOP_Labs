@@ -14,7 +14,7 @@ std::shared_mutex npc_mutex;
 
 int main() {
     World world(50.0);
-    Visitor visitor(50.0);
+    Visitor visitor;
     ConsoleObserver consoleObserver;
     FileObserver fileObserver("log.txt");
 

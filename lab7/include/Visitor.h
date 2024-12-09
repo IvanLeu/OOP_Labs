@@ -3,23 +3,22 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
+#include <random>
+#include <chrono>
 
 #include "Character.h"
 #include "Observer.h"
 
 class Visitor {
 public:
-    Visitor(double range)
-        :
-        attackRange(range)
-    {}
     void AddObserver(EventObserver* observer) {
         observers.push_back(observer);
     }
-    void SetAttackRange(float range) {
-        attackRange = range;
-    }
     void Engage(std::vector<std::shared_ptr<Character>>& characters) {
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        std::default_random_engine rng(seed);
+        std::uniform_int_distribution dist(1, 6);
+
         for (size_t i = 0; i < characters.size(); ++i) {
             for (size_t j = i + 1; j < characters.size(); ++j) {
                 auto leftChar = characters[i];
@@ -31,26 +30,21 @@ public:
 
                 double distance = std::sqrt(std::pow(leftChar->GetPosX() - rightChar->GetPosX(), 2) + std::pow(leftChar->GetPosY() - rightChar->GetPosY(), 2));
 
-                if (distance <= attackRange) {
-                    bool leftWon = leftChar->Beats(*rightChar);
-                    bool rightWon = rightChar->Beats(*leftChar);
+                bool leftWon = leftChar->Beats(*rightChar) && distance <= leftChar->GetAttackRange() && dist(rng) > dist(rng);
+                bool rightWon = rightChar->Beats(*leftChar) && distance <= rightChar->GetAttackRange() && dist(rng) > dist(rng);
 
-                    if (leftWon && rightWon) {
-                        Announce(leftChar->GetName() + " and " + rightChar->GetName() + " destroyed each other in deadly battle.");
-                        leftChar->Kill();
-                        rightChar->Kill();
-                    }
-                    else if (leftWon) {
-                        Announce(leftChar->GetName() + " beats " + rightChar->GetName());
-                        rightChar->Kill();
-                    }
-                    else if (rightChar) {
-                        Announce(rightChar->GetName() + " beats " + leftChar->GetName());
-                        leftChar->Kill();
-                    }
-                    else {
-                        continue;
-                    }
+                if (leftWon && rightWon) {
+                    Announce(leftChar->GetName() + " and " + rightChar->GetName() + " destroyed each other in deadly battle.");
+                    leftChar->Kill();
+                    rightChar->Kill();
+                }
+                else if (leftWon) {
+                    Announce(leftChar->GetName() + " beats " + rightChar->GetName());
+                    rightChar->Kill();
+                }
+                else if (rightWon) {
+                    Announce(rightChar->GetName() + " beats " + leftChar->GetName());
+                    leftChar->Kill();
                 }
                 else {
                     continue;
@@ -65,6 +59,5 @@ private:
         }
     }
 private:
-    double attackRange;
     std::vector<EventObserver*> observers;
 };
